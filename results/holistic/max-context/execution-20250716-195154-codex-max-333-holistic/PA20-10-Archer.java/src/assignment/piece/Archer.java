@@ -1,0 +1,109 @@
+
+package assignment.piece;
+
+import assignment.protocol.Game;
+import assignment.protocol.Move;
+import assignment.protocol.Piece;
+import assignment.protocol.Place;
+import assignment.protocol.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Archer piece that moves similar to cannon in chinese chess.
+ * Rules of move of Archer can be found in wikipedia (https://en.wikipedia.org/wiki/Xiangqi#Cannon).
+ *
+ * @see <a href='https://en.wikipedia.org/wiki/Xiangqi#Cannon'>Wikipedia</a>
+ */
+public class Archer extends Piece {
+    public Archer(Player player) {
+        super(player);
+    }
+
+    @Override
+    public char getLabel() {
+        return 'A';
+    }
+
+    /**
+     * Returns an array of moves that are valid given the current place of the piece.
+     * Given the {@link Game} object and the {@link Place} that current knight piece locates, this method should
+     * return ALL VALID {@link Move}s according to the current {@link Place} of this knight piece.
+     * All the returned {@link Move} should have source equal to the source parameter.
+     *
+     * Hint: you should consider corner cases when the {@link Move} is not valid on the gameboard.
+     * Several tests are provided and your implementation should pass them.
+     *
+     * <strong>Attention: Student should make sure all {@link Move}s returned are valid.</strong>
+     *
+     * @param game   the game object
+     * @param source the current place of the piece
+     * @return an array of available moves
+     */
+    @Override
+    public Move[] getAvailableMoves(Game game, Place source) {
+        List<Move> moves = new ArrayList<>();
+        int size = game.getConfiguration().getSize();
+
+        // Four orthogonal directions
+        int[][] deltas = {
+                {1, 0},  // east
+                {-1, 0}, // west
+                {0, 1},  // north
+                {0, -1}  // south
+        };
+
+        for (int[] delta : deltas) {
+            int dx = delta[0], dy = delta[1];
+
+            int x = source.x() + dx;
+            int y = source.y() + dy;
+
+            // 1) Move like a rook across empty squares until first piece (screen) or boundary
+            while (x >= 0 && x < size && y >= 0 && y < size && game.getPiece(x, y) == null) {
+                Move m = new Move(source, x, y);
+                if (validateMove(game, m)) {
+                    moves.add(m);
+                }
+                x += dx;
+                y += dy;
+            }
+
+            // 2) Skip exactly one piece (the "screen")
+            if (x < 0 || x >= size || y < 0 || y >= size) {
+                continue;  // no screen found before boundary
+            }
+            // found a screen piece at (x,y), now step one more to see if there's a capture
+            x += dx;
+            y += dy;
+
+            // 3) Only the very next occupied piece (of opposing player) may be captured
+            if (x >= 0 && x < size && y >= 0 && y < size && game.getPiece(x, y) != null) {
+                Move capture = new Move(source, x, y);
+                if (validateMove(game, capture)) {
+                    moves.add(capture);
+                }
+            }
+        }
+
+        return moves.toArray(new Move[0]);
+    }
+
+    private boolean validateMove(Game game, Move move) {
+        var rules = new Rule[] {
+                new OutOfBoundaryRule(),
+                new OccupiedRule(),
+                new VacantRule(),
+                new NilMoveRule(),
+                new FirstNMovesProtectionRule(game.getConfiguration().getNumMovesProtection()),
+                new ArcherMoveRule(),
+        };
+        for (var rule : rules) {
+            if (!rule.validate(game, move)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

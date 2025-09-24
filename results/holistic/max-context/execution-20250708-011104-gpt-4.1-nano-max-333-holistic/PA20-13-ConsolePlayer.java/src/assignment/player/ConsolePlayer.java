@@ -1,0 +1,146 @@
+
+package assignment.player;
+
+import assignment.protocol.Game;
+import assignment.protocol.Move;
+import assignment.protocol.Player;
+import assignment.protocol.Color;
+import assignment.protocol.Place;
+import assignment.protocol.Rule;
+import assignment.protocol.OutOfBoundaryRule;
+import assignment.protocol.OccupiedRule;
+import assignment.protocol.VacantRule;
+import assignment.protocol.NilMoveRule;
+import assignment.protocol.FirstNMovesProtectionRule;
+import assignment.protocol.ArcherMoveRule;
+import assignment.protocol.KnightMoveRule;
+import assignment.protocol.KnightBlockRule;
+
+import java.util.Scanner;
+
+/**
+ * The player that makes move according to user input from console.
+ */
+public class ConsolePlayer extends Player {
+    public ConsolePlayer(String name, Color color) {
+        super(name, color);
+    }
+
+    public ConsolePlayer(String name) {
+        this(name, Color.GREEN);
+    }
+
+    /**
+     * Choose a move from available moves.
+     * This method will be called by {@link Game} object to get the move that the player wants to make when it is the
+     * player's turn.
+     * <p>
+     * {@link ConsolePlayer} returns a move according to user's input in the console.
+     * The console input format should conform the format described in the assignment description.
+     * (e.g. {@literal a1->b3} means move the {@link Piece} at {@link Place}(x=0,y=0) to {@link Place}(x=1,y=2))
+     * Note that in the {@link Game}.board, the index starts from 0 in both x and y dimension, while in the console
+     * display, x dimension index starts from 'a' and y dimension index starts from 1.
+     * <p>
+     * Hint: be sure to handle invalid input to avoid invalid {@link Move}s.
+     * <p>
+     * <strong>Attention: Student should make sure the {@link Move} returned is valid.</strong>
+     * <p>
+     * <strong>Attention: {@link Place} object uses integer as index of x and y-axis, both starting from 0 to
+     * facilitate programming.
+     * This is VERY different from the coordinate used in console display.</strong>
+     *
+     * @param game           the current game object
+     * @param availableMoves available moves for this player to choose from.
+     * @return the chosen move
+     */
+    @Override
+    public Move nextMove(Game game, Move[] availableMoves) {
+        Scanner scanner = new Scanner(System.in);
+        Move chosenMove = null;
+        while (true) {
+            System.out.print("Enter your move (e.g., a1->b3): ");
+            String input = scanner.nextLine().trim();
+            Move move = parseMove(input);
+            if (move == null) {
+                System.out.println("Invalid format. Please enter move in format 'a1->b3'.");
+                continue;
+            }
+            // Check if move is among available moves
+            boolean isValid = false;
+            for (Move m : availableMoves) {
+                if (m.equals(move)) {
+                    isValid = true;
+                    chosenMove = m;
+                    break;
+                }
+            }
+            if (!isValid) {
+                System.out.println("Move not available. Please choose a valid move from the list.");
+                continue;
+            }
+            // Validate move according to game rules
+            String validationMsg = validateMove(game, chosenMove);
+            if (validationMsg != null) {
+                System.out.println("Invalid move: " + validationMsg);
+                continue;
+            }
+            break;
+        }
+        return chosenMove;
+    }
+
+    private static Move parseMove(String str) {
+        String[] segments = str.split("->");
+        if (segments.length < 2) {
+            return null;
+        }
+        Place source = parsePlace(segments[0].strip());
+        if (source == null) {
+            return null;
+        }
+        Place destination = parsePlace(segments[1].strip());
+        if (destination == null) {
+            return null;
+        }
+        return new Move(source, destination);
+    }
+
+    private static Place parsePlace(String str) {
+        if (str.length() < 2) {
+            return null;
+        }
+        try {
+            int x = str.charAt(0) - 'a';
+            int y = Integer.parseInt(str.substring(1)) - 1;
+            return new Place(x, y);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String validateMove(Game game, Move move) {
+        Rule[] rules = new Rule[] {
+            new OutOfBoundaryRule(),
+            new OccupiedRule(),
+            new VacantRule(),
+            new NilMoveRule(),
+            new FirstNMovesProtectionRule(game.getConfiguration().getNumMovesProtection()),
+            new ArcherMoveRule(),
+            new KnightMoveRule(),
+            new KnightBlockRule()
+        };
+        for (Rule rule : rules) {
+            if (!rule.validate(game, move)) {
+                return rule.getDescription();
+            }
+        }
+        var piece = game.getPiece(move.getSource());
+        if (piece == null) {
+            return "No piece at " + move.getSource().toString();
+        }
+        if (!this.equals(piece.getPlayer())) {
+            return "Cannot move a piece not belonging to you";
+        }
+        return null;
+    }
+}
