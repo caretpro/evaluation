@@ -1,6 +1,6 @@
 # CARET
 
-CARET is a conversational assistant for Java software development, which implements an architecture open, accountable, and trustworthy. CARET is a plugin for the Eclipse IDE that supports code completion, documentation, code optimisation, error fixing and unit testing. This tool supports different LLM technologies, which can be added through an extension point, and allows the user to add new tasks and validators.
+[CARET](https://caretpro.github.io/) is a conversational assistant for Java software development, which implements an architecture open, accountable, and trustworthy. This tool is a plugin for the Eclipse IDE that supports code completion, documentation, code optimisation, error fixing and unit testing. It supports different LLM technologies, which can be added through an extension point, and also allows the user to add new tasks and validators.
 
 ## CARET Experiment: Code Completion
 
@@ -16,7 +16,7 @@ In each execution, the four projects are evaluated using a predefined LLM agent,
 
 The projects_data folder includes the projects used for the evaluation: 
 - PA19, PA20, PA21, and PA22: contain incomplete classes.
-- -Execution projects: where the evaluation is performed.
+- -Execution projects: where the executions are performed.
 - -Solution projects: contain correctly completed classes.
 
 The results folder includes subfolders grouped by strategy, configuration, and LLM:
