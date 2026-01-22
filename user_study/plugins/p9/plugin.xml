@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="caret.TaskGroup">
+      <tasks
+            id="java"
+            name="java tasks">
+         <task
+               bind="CONTEXTUAL"
+               code="APPLY_MISO_STYLE"
+               description="Convert the method applying the MISO programming style."
+               instructions="- The body of any method must not exceed 15 lines of code.&#x0A;- No more than one variable declaration per line.&#x0A;- Do not use two or more consecutive blank lines.&#x0A;- Use switch instead of if-else when evaluating a single variable, if possible.&#x0A;- Use the Streams API instead of for or while loops to manipulate collections.&#x0A;- Add brief line comments to document the rationale of the code when necessary (explain the “why” not the “how”)."
+               name="Apply MISO programming style"
+               postValidation="true"
+               previousValidation="true">
+            <parameter
+                  description="method name"
+                  hasSource="true"
+                  name="methodName"
+                  parameterType="METHOD"
+                  required="true">
+            </parameter>
+            <parameter
+                  description="Class Name"
+                  hasSource="true"
+                  name="className"
+                  parameterType="CLASS"
+                  required="false">
+            </parameter>
+            <context
+                  attributes="true"
+                  extendedClass="true"
+                  implementedInterface="true"
+                  methodParameters="true"
+                  methodVariables="true">
+            </context>
+            <action
+                  parameterName="methodName"
+                  parameterType="METHOD"
+                  type="UPDATE">
+            </action>
+         </task>
+      </tasks>
+   </extension>
+
+</plugin>
