@@ -1,2 +1,0 @@
-
-moveStack.getUndoCount()

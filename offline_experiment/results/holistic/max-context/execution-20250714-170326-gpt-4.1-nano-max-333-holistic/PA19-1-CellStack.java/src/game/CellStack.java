@@ -1,0 +1,58 @@
+
+package game;
+
+import game.map.cells.FillableCell;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Stack;
+
+/**
+ * Class encapsulating an undo stack.
+ */
+class CellStack {
+
+    private final Stack<@NotNull FillableCell> cellStack = new Stack<>();
+    private int undoCount = 0;
+
+    /**
+     * Pushes a cell into the stack.
+     *
+     * @param cell Cell to push into the stack.
+     */
+    void push(final FillableCell cell) {
+        if (cell != null) {
+            cellStack.push(cell);
+            // Do not increment undoCount here, as push does not count as an undo.
+        }
+    }
+
+    /**
+     * Pops a cell from the stack.
+     *
+     * @return The last-pushed cell, or {@code null} if the stack is empty.
+     */
+    @Nullable
+    FillableCell pop() {
+        if (cellStack.isEmpty()) {
+            return null;
+        }
+        FillableCell poppedCell = cellStack.pop();
+        undoCount++;
+        return poppedCell;
+    }
+
+    /**
+     * @return Number of undos (i.e. {@link CellStack#pop()}) invoked.
+     */
+    int getUndoCount() {
+        return undoCount;
+    }
+
+    /**
+     * Displays the current undo count to {@link System#out}.
+     */
+    void display() {
+        System.out.println("Undo Count: " + undoCount);
+    }
+}

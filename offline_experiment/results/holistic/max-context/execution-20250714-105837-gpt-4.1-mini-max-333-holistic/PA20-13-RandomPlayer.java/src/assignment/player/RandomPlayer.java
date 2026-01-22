@@ -1,0 +1,57 @@
+
+package assignment.player;
+
+import assignment.protocol.Game;
+import assignment.protocol.Color;
+import assignment.protocol.Move;
+import assignment.protocol.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Random;
+
+/**
+ * A computer player that makes a move randomly.
+ */
+public class RandomPlayer extends Player {
+	private static final Random RANDOM = new Random();
+
+	public RandomPlayer(String name, Color color) {
+		super(name, color);
+	}
+
+	public RandomPlayer(String name) {
+		this(name, Color.BLUE);
+	}
+
+	/**
+	 * Choose a move from available moves.
+	 * This method will be called by {@link Game} object to get the move that the player wants to make when it is the
+	 * player's turn.
+	 * <p>
+	 * {@link RandomPlayer} chooses a move from available ones randomly.
+	 * <p>
+	 * <strong>Attention: Student should make sure the {@link Move} returned is valid.</strong>
+	 *
+	 * @param game           the current game object
+	 * @param availableMoves available moves for this player to choose from.
+	 * @return the chosen move
+	 */
+	@Override
+	public @NotNull Move nextMove(Game game, Move[] availableMoves) {
+		if (availableMoves == null) {
+			throw new IllegalArgumentException("Available moves array is null.");
+		}
+		// Filter out null moves
+		Move[] filteredMoves = Arrays.stream(availableMoves)
+				.filter(m -> m != null)
+				.toArray(Move[]::new);
+
+		if (filteredMoves.length == 0) {
+			throw new IllegalArgumentException("No available moves to choose from.");
+		}
+
+		int index = RANDOM.nextInt(filteredMoves.length);
+		return filteredMoves[index];
+	}
+}

@@ -1,0 +1,2 @@
+
+random.nextInt(availableMoves.length)

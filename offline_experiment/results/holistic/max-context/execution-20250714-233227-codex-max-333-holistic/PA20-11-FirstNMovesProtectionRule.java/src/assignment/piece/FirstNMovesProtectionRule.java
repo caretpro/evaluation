@@ -1,0 +1,2 @@
+
+game.getNumMoves() < this.numProtectedMoves

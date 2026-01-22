@@ -1,2 +1,0 @@
-
-import assignment.piece.OutOfBoundaryRule;

@@ -1,0 +1,34 @@
+
+package pa1.model;
+
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * An entity on the game board.
+ */
+public abstract class Entity implements BoardElement {
+
+    @Nullable
+    private EntityCell owner;
+
+    /**
+     * @return The {@link EntityCell} owning this entity, or {@code null} if this entity is not bound to a cell.
+     */
+    public final EntityCell getOwner() {
+        return this.owner;
+    }
+
+    protected Entity() {
+        this.owner = null;
+    }
+
+    protected Entity(final EntityCell owner) {
+        this.owner = owner;
+    }
+
+    public final EntityCell setOwner(final EntityCell owner) {
+        EntityCell previousOwner = this.owner;
+        this.owner = owner;
+        return previousOwner;
+    }
+}

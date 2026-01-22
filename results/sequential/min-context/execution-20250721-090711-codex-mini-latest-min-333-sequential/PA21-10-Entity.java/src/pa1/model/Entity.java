@@ -1,2 +1,0 @@
-
-EntityCell setOwner(EntityCell owner);
