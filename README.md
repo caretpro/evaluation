@@ -9,7 +9,7 @@ This experiment is about the evaluation of CARET assistant to complete Java clas
 Five agents from different technologies were used in the executions: GPT-4.1-mini, GPT-4.1-nano, Codex-mini-latest, Gemini-2.0-flash, and DeepSeek-chat (DeepSeek-V3-0324). 
 
 In each execution, the four projects are evaluated using a predefined LLM agent, and the results are stored in an "execution-" folder. This folder contains the following files/folders:
-- classes.csv: a list of results by class.
+- classes.csv: list of results by class.
 - log.txt: execution logs.
 - xlsx file: summary of the execution results.
 - Folders containing the modified projects with each completed class.
@@ -47,4 +47,27 @@ The project folder contains the GameScoreManager Java project, which was used to
 user_study/
 ├── plugins/
 └── project/
+```
+## Offline Experiment: Iteration Cost
+
+This experiment is a new evaluation of the iteration cost (latency and tokens) introduced by the improvement cycles in the assistance tasks, in this case applying code completion, and success rates per phase.
+
+The PA21 project was evaluated, using the holistic strategy with maximum context for each execution, with the same workflow: completion, compilation, and validation with JUnit. Up to three iterations per phase were performed. Five executions were performed for each LLM, including gemini-3.5-flash-lite, gpt-5.6luna, and deepseek-v4-flash.
+
+In each execution, using a predefined LLM agent, the results are stored in an "execution-" folder. This folder contains the following files/folders:
+
+- classes.csv: list of results by class.
+- classes_summary.csv: summary of results by class.
+- iterations.csv: list of results by class and iteration.
+- log.txt: execution logs.
+- Folders containing the modified projects with each completed class.
+
+The projects_data folder includes the projects used for the evaluation: PA21.
+
+```
+iteration_cost
+├── projects_data/
+└── results/
+	├── holistic/
+	│   ├── max-context/
 ```
